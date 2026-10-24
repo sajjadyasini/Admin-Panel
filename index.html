@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#17131d" />
+    <title>داشبورد فروشگاهی</title>
+
+    <script>
+      (() => {
+        const theme = localStorage.getItem("theme") || "dark";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+        document.documentElement.classList.toggle("light", theme === "light");
+      })();
+    </script>
+
+   <link rel="stylesheet" href="./src/input.css" />
+
+    <script defer src="./vendor/chart.umd.js"></script>
+    <script defer src="./vendor/alpine.min.js"></script>
+  </head>
+
+  <body
+    class="min-h-screen bg-[#f5f6f8] text-[#25212b] transition-colors duration-300 dark:bg-[#17131d] dark:text-[#f5f2f7]"
+    x-data="dashboard"
+  >
+    <div class="min-h-screen">
+      <!-- Mobile overlay -->
+      <div
+        x-show="sidebarOpen"
+        x-transition.opacity
+        @click="sidebarOpen = false"
+        class="fixed inset-0 z-40 bg-black/60 lg:hidden"
+        style="display: none"
+      ></div>
+
+      <!-- Sidebar -->
+      <aside
+        class="fixed inset-y-0 right-0 z-50 flex w-72 max-w-[85vw] flex-col border-l border-gray-200 bg-white p-5 transition-transform duration-300 dark:border-white/5 dark:bg-[#1d1725] lg:translate-x-0"
+        :class="sidebarOpen ? 'translate-x-0' : 'translate-x-full lg:translate-x-0'"
+      >
+        <div class="mb-9 flex items-center justify-between">
+          <a href="./index.html" class="flex items-center gap-3">
+            <div
+              class="flex size-11 items-center justify-center rounded-2xl bg-[#4f8a67] text-2xl text-white"
+            >
+              S
+            </div>
+            <div>
+              <h1 class="text-xl font-black tracking-wide">PANEL</h1>
+              <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                مدیریت فروشگاه
+              </p>
+            </div>
+          </a>
+
+          <button
+            type="button"
+            @click="sidebarOpen = false"
+            class="rounded-xl p-2 hover:bg-gray-100 dark:hover:bg-white/10 lg:hidden"
+            aria-label="بستن منو"
+          >
+            ✕
+          </button>
+        </div>
+
+        <p class="mb-3 px-3 text-xs font-semibold text-gray-400">منوی اصلی</p>
+
+        <nav class="flex flex-col gap-2">
+          <a
+            href="./index.html"
+            class="flex items-center gap-3 rounded-xl bg-[#4f8a67]/15 px-4 py-3 font-semibold text-[#4f8a67] dark:text-[#86c69b]"
+          >
+            <span>▦</span>
+            <span>داشبورد</span>
+          </a>
+
+          <a
+            href="./pages/products.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>▣</span><span>محصولات</span>
+          </a>
+
+          <a
+            href="./pages/orders.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>▤</span><span>سفارش‌ها</span>
+          </a>
+
+          <a
+            href="./pages/customers.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>♙</span><span>مشتریان</span>
+          </a>
+
+          <a
+            href="./pages/sales.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>◈</span><span>فروش و درآمد</span>
+          </a>
+
+          <a
+            href="./pages/reports.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>▥</span><span>گزارش‌ها</span>
+          </a>
+
+          <a
+            href="./pages/settings.html"
+            class="flex items-center gap-3 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+          >
+            <span>⚙</span><span>تنظیمات</span>
+          </a>
+        </nav>
+
+        <div
+          class="mt-auto rounded-2xl border border-[#4f8a67]/20 bg-[#4f8a67]/10 p-4"
+        >
+          <p class="font-bold text-[#4f8a67] dark:text-[#86c69b]">
+            فروشگاه شما
+          </p>
+          <p class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400">
+            همه اطلاعات فروشگاه را از این قسمت مدیریت کنید.
+          </p>
+        </div>
+      </aside>
+
+      <!-- Main -->
+      <main class="min-w-0 lg:mr-72">
+        <!-- Header -->
+        <header
+          class="sticky top-0 z-30 flex items-center justify-between gap-3 border-b border-gray-200 bg-white/90 px-4 py-4 backdrop-blur-xl dark:border-white/5 dark:bg-[#17131d]/90 md:px-8"
+        >
+          <div class="flex items-center gap-3">
+            <button
+              type="button"
+              @click="sidebarOpen = true"
+              class="rounded-xl border border-gray-200 p-2.5 dark:border-white/10 lg:hidden"
+              aria-label="باز کردن منو"
+            >
+              ☰
+            </button>
+
+            <div>
+              <h2 class="text-lg font-black md:text-2xl">داشبورد</h2>
+              <p
+                class="mt-1 text-xs text-gray-500 dark:text-gray-400 md:text-sm"
+              >
+                خلاصه وضعیت فروشگاه شما
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 md:gap-4">
+            <button
+              type="button"
+              @click="toggleTheme()"
+              class="flex size-10 items-center justify-center rounded-xl border border-gray-200 transition hover:bg-gray-100 dark:border-white/10 dark:hover:bg-white/5"
+              :aria-label="dark ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'"
+            >
+              <span x-text="dark ? '☀️' : '🌙'"></span>
+            </button>
+
+            <button
+              type="button"
+              class="relative flex size-10 items-center justify-center rounded-xl border border-gray-200 dark:border-white/10"
+              aria-label="اعلان‌ها"
+            >
+              ♧
+              <span
+                class="absolute right-2 top-2 size-2 rounded-full bg-red-500"
+              ></span>
+            </button>
+
+            <div class="flex items-center gap-2">
+              <div
+                class="flex size-10 items-center justify-center rounded-full bg-[#4f8a67] font-bold text-white"
+              >
+                س
+              </div>
+              <div class="hidden sm:block">
+                <p class="text-sm font-bold">مدیر فروشگاه</p>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  مدیر سیستم
+                </p>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="space-y-6 p-4 md:p-8">
+          <!-- Welcome -->
+          <section
+            class="flex flex-col justify-between gap-4 rounded-3xl bg-gradient-to-l from-[#315c43] to-[#4f8a67] p-5 text-white shadow-lg shadow-[#4f8a67]/10 md:flex-row md:items-center md:p-8"
+          >
+            <div>
+              <p class="text-sm text-white/75">خوش آمدید 👋</p>
+              <h2 class="mt-3 text-2xl font-black md:text-3xl">
+                نمای کلی فروشگاه
+              </h2>
+              <p class="mt-3 max-w-xl text-sm leading-7 text-white/80">
+                در این بخش می‌توانید وضعیت فروش، سفارش‌ها و مشتریان را بررسی
+                کنید.
+              </p>
+            </div>
+            <a
+              href="./pages/reports.html"
+              class="inline-flex w-fit items-center justify-center rounded-xl bg-white px-5 py-3 text-sm font-bold text-[#315c43] transition hover:bg-white/90"
+            >
+              مشاهده گزارش‌ها ←
+            </a>
+          </section>
+
+          <!-- Stats -->
+          <section class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a]"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >فروش کل</span
+                >
+                <span
+                  class="flex size-11 items-center justify-center rounded-xl bg-emerald-500/10 text-xl"
+                  >💰</span
+                >
+              </div>
+              <p class="mt-5 text-2xl font-black">۱۲۵,۸۰۰,۰۰۰</p>
+              <p class="mt-3 text-xs text-gray-500">تومان</p>
+              <div
+                class="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400"
+              >
+                <span>↗ ۱۲.۸٪</span>
+                <span class="text-gray-400">نسبت به ماه قبل</span>
+              </div>
+            </article>
+
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a]"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >سفارش‌ها</span
+                >
+                <span
+                  class="flex size-11 items-center justify-center rounded-xl bg-blue-500/10 text-xl"
+                  >🛒</span
+                >
+              </div>
+              <p class="mt-5 text-2xl font-black">۱,۲۴۸</p>
+              <p class="mt-3 text-xs text-gray-500">سفارش ثبت‌شده</p>
+              <div
+                class="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400"
+              >
+                <span>↗ ۸.۲٪</span>
+                <span class="text-gray-400">نسبت به ماه قبل</span>
+              </div>
+            </article>
+
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a]"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >مشتریان</span
+                >
+                <span
+                  class="flex size-11 items-center justify-center rounded-xl bg-purple-500/10 text-xl"
+                  >👥</span
+                >
+              </div>
+              <p class="mt-5 text-2xl font-black">۳,۵۸۶</p>
+              <p class="mt-3 text-xs text-gray-500">مشتری ثبت‌شده</p>
+              <div
+                class="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400"
+              >
+                <span>↗ ۶.۴٪</span>
+                <span class="text-gray-400">نسبت به ماه قبل</span>
+              </div>
+            </article>
+
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a]"
+            >
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-gray-500 dark:text-gray-400"
+                  >محصولات</span
+                >
+                <span
+                  class="flex size-11 items-center justify-center rounded-xl bg-amber-500/10 text-xl"
+                  >📦</span
+                >
+              </div>
+              <p class="mt-5 text-2xl font-black">۸۴۲</p>
+              <p class="mt-3 text-xs text-gray-500">محصول فعال</p>
+              <div
+                class="mt-4 flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400"
+              >
+                <span>↗ ۴.۱٪</span>
+                <span class="text-gray-400">نسبت به ماه قبل</span>
+              </div>
+            </article>
+          </section>
+
+          <!-- Charts -->
+          <section class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a] xl:col-span-2"
+            >
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 class="font-black">آمار فروش</h3>
+                  <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                    مقایسه فروش در ماه‌های سال
+                  </p>
+                </div>
+
+                <select
+                  x-model="period"
+                  @change="updateSalesChart()"
+                  class="rounded-xl border border-gray-200 bg-transparent px-3 py-2 text-sm outline-none dark:border-white/10"
+                  aria-label="دوره نمودار فروش"
+                >
+                  <option value="6">۶ ماه اخیر</option>
+                  <option value="12">۱۲ ماه اخیر</option>
+                </select>
+              </div>
+
+              <div class="mt-6 h-64 md:h-80">
+                <canvas id="salesChart" aria-label="نمودار فروش"></canvas>
+              </div>
+            </article>
+
+            <article
+              class="rounded-2xl border border-gray-200 bg-white p-5 dark:border-white/5 dark:bg-[#211b2a]"
+            >
+              <h3 class="font-black">وضعیت سفارش‌ها</h3>
+              <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                بر اساس وضعیت فعلی
+              </p>
+
+              <div class="mx-auto mt-5 h-56 max-w-xs">
+                <canvas
+                  id="ordersChart"
+                  aria-label="نمودار وضعیت سفارش‌ها"
+                ></canvas>
+              </div>
+
+              <div class="mt-5 space-y-3 text-sm">
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-2"
+                    ><span class="size-2 rounded-full bg-[#4f8a67]"></span
+                    >تکمیل‌شده</span
+                  >
+                  <span class="font-bold">۶۵٪</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-2"
+                    ><span class="size-2 rounded-full bg-amber-400"></span>در
+                    حال پردازش</span
+                  >
+                  <span class="font-bold">۲۵٪</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="flex items-center gap-2"
+                    ><span class="size-2 rounded-full bg-rose-500"></span
+                    >لغوشده</span
+                  >
+                  <span class="font-bold">۱۰٪</span>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <!-- Recent orders -->
+          <section
+            class="overflow-hidden rounded-2xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#211b2a]"
+          >
+            <div class="flex flex-wrap items-center justify-between gap-3 p-5">
+              <div>
+                <h3 class="font-black">آخرین سفارش‌ها</h3>
+                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                  مروری بر سفارش‌های اخیر
+                </p>
+              </div>
+              <a
+                href="./pages/orders.html"
+                class="rounded-xl bg-[#4f8a67]/10 px-4 py-2 text-sm font-bold text-[#4f8a67] dark:text-[#86c69b]"
+              >
+                همه سفارش‌ها
+              </a>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full min-w-[650px] text-right text-sm">
+                <thead
+                  class="bg-gray-50 text-gray-500 dark:bg-white/[0.03] dark:text-gray-400"
+                >
+                  <tr>
+                    <th class="px-5 py-4 font-medium">شماره سفارش</th>
+                    <th class="px-5 py-4 font-medium">مشتری</th>
+                    <th class="px-5 py-4 font-medium">تاریخ</th>
+                    <th class="px-5 py-4 font-medium">مبلغ</th>
+                    <th class="px-5 py-4 font-medium">وضعیت</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+                  <template x-for="order in orders" :key="order.id">
+                    <tr
+                      class="transition hover:bg-gray-50 dark:hover:bg-white/[0.03]"
+                    >
+                      <td class="px-5 py-4 font-bold" x-text="order.id"></td>
+                      <td class="px-5 py-4" x-text="order.customer"></td>
+                      <td
+                        class="px-5 py-4 text-gray-500 dark:text-gray-400"
+                        x-text="order.date"
+                      ></td>
+                      <td
+                        class="px-5 py-4 font-semibold"
+                        x-text="order.amount + ' تومان'"
+                      ></td>
+                      <td class="px-5 py-4">
+                        <span
+                          class="inline-flex rounded-lg px-3 py-1.5 text-xs font-semibold"
+                          :class="{
+                          'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400': order.status === 'تکمیل‌شده',
+                          'bg-amber-500/10 text-amber-600 dark:text-amber-400': order.status === 'در حال پردازش',
+                          'bg-rose-500/10 text-rose-600 dark:text-rose-400': order.status === 'لغوشده'
+                        }"
+                          x-text="order.status"
+                        ></span>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <footer class="pb-3 text-center text-xs text-gray-400">
+         داشبورد فروشگاهی · طراح سید سجاد یاسینی
+          </footer>
+        </div>
+      </main>
+    </div>
+
+    <script>
+      document.addEventListener("alpine:init", () => {
+        Alpine.data("dashboard", () => ({
+          sidebarOpen: false,
+          dark: localStorage.getItem("theme") !== "light",
+          period: "6",
+          salesChart: null,
+          ordersChart: null,
+
+          orders: [
+            {
+              id: "#1048",
+              customer: "علی محمدی",
+              date: "۱۴۰۵/۰۷/۲۹",
+              amount: "۲,۵۰۰,۰۰۰",
+              status: "تکمیل‌شده",
+            },
+            {
+              id: "#1047",
+              customer: "سارا احمدی",
+              date: "۱۴۰۵/۰۷/۲۹",
+              amount: "۱,۸۰۰,۰۰۰",
+              status: "در حال پردازش",
+            },
+            {
+              id: "#1046",
+              customer: "رضا کریمی",
+              date: "۱۴۰۵/۰۷/۲۸",
+              amount: "۹۵۰,۰۰۰",
+              status: "تکمیل‌شده",
+            },
+            {
+              id: "#1045",
+              customer: "مریم رضایی",
+              date: "۱۴۰۵/۰۷/۲۸",
+              amount: "۳,۲۰۰,۰۰۰",
+              status: "لغوشده",
+            },
+            {
+              id: "#1044",
+              customer: "امیر حسینی",
+              date: "۱۴۰۵/۰۷/۲۷",
+              amount: "۱,۴۵۰,۰۰۰",
+              status: "تکمیل‌شده",
+            },
+          ],
+
+          init() {
+            this.$nextTick(() => {
+              this.createCharts();
+            });
+
+            this.$watch("dark", () => {
+              this.updateChartTheme();
+            });
+          },
+
+          toggleTheme() {
+            this.dark = !this.dark;
+            localStorage.setItem("theme", this.dark ? "dark" : "light");
+            document.documentElement.classList.toggle("dark", this.dark);
+            document.documentElement.classList.toggle("light", !this.dark);
+          },
+
+          createCharts() {
+            if (typeof Chart === "undefined") return;
+
+            const textColor = this.dark ? "#c4bcca" : "#716b77";
+            const gridColor = this.dark ? "#ffffff12" : "#00000010";
+
+            Chart.defaults.color = textColor;
+            Chart.defaults.font.family = "Tahoma, sans-serif";
+
+            const salesCanvas = document.getElementById("salesChart");
+            const ordersCanvas = document.getElementById("ordersChart");
+
+            if (salesCanvas) {
+              this.salesChart = new Chart(salesCanvas, {
+                type: "line",
+                data: {
+                  labels: [
+                    "فروردین",
+                    "اردیبهشت",
+                    "خرداد",
+                    "تیر",
+                    "مرداد",
+                    "شهریور",
+                    "مهر",
+                    "آبان",
+                    "آذر",
+                    "دی",
+                    "بهمن",
+                    "اسفند",
+                  ].slice(-Number(this.period)),
+                  datasets: [
+                    {
+                      label: "فروش (میلیون تومان)",
+                      data: [
+                        42, 58, 49, 75, 68, 92, 85, 110, 98, 125, 117, 145,
+                      ].slice(-Number(this.period)),
+                      borderColor: "#69a980",
+                      backgroundColor: "rgba(79,138,103,.12)",
+                      fill: true,
+                      tension: 0.4,
+                      borderWidth: 3,
+                      pointRadius: 3,
+                      pointHoverRadius: 6,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: { legend: { display: false } },
+                  scales: {
+                    x: { grid: { display: false } },
+                    y: { beginAtZero: true, grid: { color: gridColor } },
+                  },
+                },
+              });
+            }
+
+            if (ordersCanvas) {
+              this.ordersChart = new Chart(ordersCanvas, {
+                type: "doughnut",
+                data: {
+                  labels: ["تکمیل‌شده", "در حال پردازش", "لغوشده"],
+                  datasets: [
+                    {
+                      data: [65, 25, 10],
+                      backgroundColor: ["#4f8a67", "#fbbf24", "#f43f5e"],
+                      borderWidth: 0,
+                      hoverOffset: 5,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  cutout: "72%",
+                  plugins: {
+                    legend: { display: false },
+                  },
+                },
+              });
+            }
+          },
+
+          updateSalesChart() {
+            if (!this.salesChart) return;
+
+            const count = Number(this.period);
+            this.salesChart.data.labels = [
+              "فروردین",
+              "اردیبهشت",
+              "خرداد",
+              "تیر",
+              "مرداد",
+              "شهریور",
+              "مهر",
+              "آبان",
+              "آذر",
+              "دی",
+              "بهمن",
+              "اسفند",
+            ].slice(-count);
+            this.salesChart.data.datasets[0].data = [
+              42, 58, 49, 75, 68, 92, 85, 110, 98, 125, 117, 145,
+            ].slice(-count);
+            this.salesChart.update();
+          },
+
+          updateChartTheme() {
+            if (typeof Chart === "undefined") return;
+
+            Chart.defaults.color = this.dark ? "#c4bcca" : "#716b77";
+
+            [this.salesChart, this.ordersChart].forEach((chart) => {
+              if (!chart) return;
+
+              if (chart.options.scales?.y?.grid) {
+                chart.options.scales.y.grid.color = this.dark
+                  ? "#ffffff12"
+                  : "#00000010";
+              }
+
+              chart.update();
+            });
+          },
+        }));
+      });
+    </script>
+  </body>
+</html>

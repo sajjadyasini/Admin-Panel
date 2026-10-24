@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="fa" dir="rtl" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تنظیمات | پنل مدیریت</title>
+    <link rel="stylesheet" href="../src/output.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      body {
+        font-family: "Vazirmatn", sans-serif;
+      }
+      [x-cloak] {
+        display: none !important;
+      }
+    </style>
+  </head>
+
+  <body
+    x-data="settingsPage()"
+    x-init="init()"
+    class="min-h-screen bg-gray-100 text-gray-800 transition-colors dark:bg-[#121019] dark:text-white"
+  >
+    <div class="min-h-screen lg:flex">
+      <!-- منوی کناری -->
+      <aside
+        class="hidden w-64 shrink-0 border-l border-gray-200 bg-white p-5 dark:border-white/10 dark:bg-[#1d1725] lg:flex lg:flex-col"
+      >
+        <a href="../index.html" class="mb-9 flex items-center gap-3">
+          <div
+            class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-600 text-2xl font-black text-white"
+          >
+            N
+          </div>
+          <div>
+            <h1 class="font-black">NEXORA</h1>
+            <p class="mt-1 text-xs text-gray-400">پنل مدیریت فروشگاه</p>
+          </div>
+        </a>
+
+        <p class="mb-3 px-3 text-xs text-gray-400">منوی اصلی</p>
+
+        <nav class="space-y-2 text-sm">
+          <a
+            href="../index.html"
+            class="block rounded-xl px-4 py-3 text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+            >▦ داشبورد</a
+          >
+          <a
+            href="./products.html"
+            class="block rounded-xl px-4 py-3 text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+            >▣ محصولات</a
+          >
+          <a
+            href="./orders.html"
+            class="block rounded-xl px-4 py-3 text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+            >▤ سفارش‌ها</a
+          >
+          <a
+            href="./customers.html"
+            class="block rounded-xl px-4 py-3 text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+            >♙ مشتریان</a
+          >
+          <a
+            href="./reports.html"
+            class="block rounded-xl px-4 py-3 text-gray-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-white/5"
+            >▥ گزارش‌ها</a
+          >
+          <a
+            href="./settings.html"
+            class="flex items-center justify-between rounded-xl bg-emerald-500/10 px-4 py-3 font-bold text-emerald-600 dark:text-emerald-300"
+          >
+            <span>⚙ تنظیمات</span>
+            <span>●</span>
+          </a>
+        </nav>
+
+        <div
+          class="mt-auto rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4"
+        >
+          <div class="mb-2 text-xl text-emerald-500">✦</div>
+          <p class="text-sm font-bold">مرکز کنترل فروشگاه</p>
+          <p class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400">
+            اطلاعات و تنظیمات فروشگاهت را از این قسمت مدیریت کن.
+          </p>
+        </div>
+      </aside>
+
+      <!-- محتوای صفحه -->
+      <main class="min-w-0 flex-1 p-4 sm:p-7 lg:p-9">
+        <!-- سربرگ -->
+        <header class="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <p class="mb-2 text-xs text-gray-400">پنل مدیریت / تنظیمات</p>
+            <h2 class="text-2xl font-black sm:text-3xl">تنظیمات سیستم</h2>
+            <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
+              همه‌چیز را مطابق سلیقه خودت تنظیم کن.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            @click="toggleTheme()"
+            class="flex h-11 w-11 items-center justify-center rounded-xl border border-gray-200 bg-white text-xl hover:border-emerald-500 dark:border-white/10 dark:bg-[#211b2a]"
+            :aria-label="isDark ? 'تغییر به تم روشن' : 'تغییر به تم تاریک'"
+          >
+            <span x-text="isDark ? '☀' : '☾'"></span>
+          </button>
+        </header>
+
+        <!-- هدر ویژه -->
+        <section
+          class="relative mb-7 overflow-hidden rounded-3xl bg-gradient-to-l from-[#163b2d] via-[#20533c] to-[#17131d] p-6 text-white sm:p-9"
+        >
+          <div
+            class="pointer-events-none absolute -left-8 -top-12 h-48 w-48 rounded-full border border-white/10"
+          ></div>
+          <div
+            class="pointer-events-none absolute -left-1 top-0 h-32 w-32 rounded-full border border-white/10"
+          ></div>
+
+          <div
+            class="relative flex flex-col justify-between gap-6 sm:flex-row sm:items-center"
+          >
+            <div>
+              <span
+                class="rounded-full border border-emerald-200/20 bg-white/10 px-3 py-1.5 text-xs text-emerald-200"
+                >CONTROL CENTER</span
+              >
+              <h3 class="mt-5 text-2xl font-black leading-relaxed sm:text-3xl">
+                فضای فروشگاهت،
+                <span class="text-emerald-300">قوانین خودت</span>
+              </h3>
+              <p class="mt-3 max-w-xl text-sm leading-7 text-gray-300">
+                اطلاعات، ظاهر پنل، اعلان‌ها و تنظیمات سفارش‌ها را در یک فضای
+                یکپارچه مدیریت کن.
+              </p>
+            </div>
+
+            <div
+              class="flex h-24 w-24 shrink-0 items-center justify-center self-center rounded-3xl border border-white/15 bg-white/10 text-5xl shadow-xl sm:self-auto"
+            >
+              ⚙
+            </div>
+          </div>
+        </section>
+
+        <!-- پیام موفقیت -->
+        <div
+          x-cloak
+          x-show="toast.show"
+          x-transition
+          role="status"
+          class="mb-6 flex items-center gap-3 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-sm text-emerald-600 dark:text-emerald-300"
+        >
+          <span class="text-xl">✓</span>
+          <span x-text="toast.message"></span>
+        </div>
+
+        <!-- خلاصه -->
+        <section class="mb-7 grid gap-4 sm:grid-cols-3">
+          <a
+            href="#store-info"
+            class="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:border-emerald-500/40 dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-emerald-500/10 text-xl text-emerald-500"
+            >
+              ▣
+            </div>
+            <h3 class="mt-4 font-bold">اطلاعات فروشگاه</h3>
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              نام، مدیر و راه‌های تماس
+            </p>
+            <p
+              class="mt-4 text-xs font-bold text-emerald-600 dark:text-emerald-300"
+            >
+              ویرایش اطلاعات ←
+            </p>
+          </a>
+
+          <a
+            href="#appearance"
+            class="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:border-emerald-500/40 dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-violet-500/10 text-xl text-violet-500"
+            >
+              ◐
+            </div>
+            <h3 class="mt-4 font-bold">ظاهر پنل</h3>
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              حالت تاریک و روشن
+            </p>
+            <p
+              class="mt-4 text-xs font-bold text-emerald-600 dark:text-emerald-300"
+            >
+              تغییر ظاهر ←
+            </p>
+          </a>
+
+          <a
+            href="#notifications"
+            class="rounded-2xl border border-gray-200 bg-white p-5 transition hover:-translate-y-1 hover:border-emerald-500/40 dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-xl text-amber-500"
+            >
+              ♧
+            </div>
+            <h3 class="mt-4 font-bold">اعلان‌ها و سفارش‌ها</h3>
+            <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              مدیریت هشدارها و ارسال
+            </p>
+            <p
+              class="mt-4 text-xs font-bold text-emerald-600 dark:text-emerald-300"
+            >
+              مدیریت اعلان‌ها ←
+            </p>
+          </a>
+        </section>
+
+        <form @submit.prevent="saveSettings()" class="space-y-6">
+          <!-- اطلاعات فروشگاه -->
+          <section
+            id="store-info"
+            class="scroll-mt-6 overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex items-center gap-4 border-b border-gray-100 p-5 sm:p-7 dark:border-white/5"
+            >
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-500/10 text-2xl text-emerald-500"
+              >
+                ▣
+              </div>
+              <div>
+                <h3 class="font-black">اطلاعات فروشگاه</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  مشخصات پایه کسب‌وکار
+                </p>
+              </div>
+            </div>
+
+            <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold">نام فروشگاه *</span>
+                <input
+                  type="text"
+                  x-model="settings.storeName"
+                  required
+                  maxlength="100"
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                  placeholder="نام فروشگاه"
+                />
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold">نام مدیر</span>
+                <input
+                  type="text"
+                  x-model="settings.managerName"
+                  maxlength="100"
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                  placeholder="نام مدیر فروشگاه"
+                />
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold">ایمیل</span>
+                <input
+                  type="email"
+                  x-model="settings.email"
+                  maxlength="150"
+                  dir="ltr"
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                  placeholder="info@example.com"
+                />
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold">شماره تماس</span>
+                <input
+                  type="tel"
+                  x-model="settings.phone"
+                  maxlength="20"
+                  dir="ltr"
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-left text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                  placeholder="09xxxxxxxxx"
+                />
+              </label>
+
+              <label class="block sm:col-span-2">
+                <span class="mb-2 block text-sm font-bold">نشانی فروشگاه</span>
+                <textarea
+                  x-model="settings.address"
+                  rows="3"
+                  maxlength="500"
+                  class="w-full resize-y rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                  placeholder="نشانی فروشگاه..."
+                ></textarea>
+              </label>
+            </div>
+          </section>
+
+          <!-- ظاهر پنل -->
+          <section
+            id="appearance"
+            class="scroll-mt-6 overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex items-center gap-4 border-b border-gray-100 p-5 sm:p-7 dark:border-white/5"
+            >
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-500/10 text-2xl text-violet-500"
+              >
+                ◐
+              </div>
+              <div>
+                <h3 class="font-black">ظاهر و تجربه کاربری</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  انتخاب حالت نمایش پنل
+                </p>
+              </div>
+            </div>
+
+            <div class="grid gap-4 p-5 sm:grid-cols-2 sm:p-7">
+              <button
+                type="button"
+                @click="setTheme(true)"
+                class="rounded-2xl border p-5 text-right transition"
+                :class="isDark ? 'border-emerald-500 bg-emerald-500/10' : 'border-gray-200 dark:border-white/10'"
+              >
+                <div class="mb-4 flex items-center justify-between">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#211b2a] text-xl text-emerald-300"
+                    >☾</span
+                  >
+                  <span
+                    class="flex h-5 w-5 items-center justify-center rounded-full border"
+                    :class="isDark ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 dark:border-white/20'"
+                  >
+                    <span x-show="isDark">✓</span>
+                  </span>
+                </div>
+                <p class="font-bold">حالت تاریک</p>
+                <p
+                  class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400"
+                >
+                  رنگ‌های تیره و کنتراست ملایم.
+                </p>
+              </button>
+
+              <button
+                type="button"
+                @click="setTheme(false)"
+                class="rounded-2xl border p-5 text-right transition"
+                :class="!isDark ? 'border-emerald-500 bg-emerald-500/10' : 'border-gray-200 dark:border-white/10'"
+              >
+                <div class="mb-4 flex items-center justify-between">
+                  <span
+                    class="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-xl text-amber-600"
+                    >☀</span
+                  >
+                  <span
+                    class="flex h-5 w-5 items-center justify-center rounded-full border"
+                    :class="!isDark ? 'border-emerald-500 bg-emerald-500 text-white' : 'border-gray-300 dark:border-white/20'"
+                  >
+                    <span x-show="!isDark">✓</span>
+                  </span>
+                </div>
+                <p class="font-bold">حالت روشن</p>
+                <p
+                  class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400"
+                >
+                  رنگ‌های روشن برای استفاده روزانه.
+                </p>
+              </button>
+            </div>
+          </section>
+
+          <!-- اعلان‌ها -->
+          <section
+            id="notifications"
+            class="scroll-mt-6 overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex items-center gap-4 border-b border-gray-100 p-5 sm:p-7 dark:border-white/5"
+            >
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-500/10 text-2xl text-amber-500"
+              >
+                ♧
+              </div>
+              <div>
+                <h3 class="font-black">مرکز اعلان‌ها</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  فعال یا غیرفعال کردن گزینه‌های اطلاع‌رسانی
+                </p>
+              </div>
+            </div>
+
+            <div class="divide-y divide-gray-100 p-2 dark:divide-white/5">
+              <template x-for="item in notificationOptions" :key="item.key">
+                <label
+                  class="flex cursor-pointer items-center justify-between gap-4 rounded-xl p-4 transition hover:bg-gray-50 dark:hover:bg-white/[0.03] sm:p-5"
+                >
+                  <div>
+                    <p class="text-sm font-bold" x-text="item.title"></p>
+                    <p
+                      class="mt-1 text-xs leading-6 text-gray-500 dark:text-gray-400"
+                      x-text="item.description"
+                    ></p>
+                  </div>
+
+                  <input
+                    type="checkbox"
+                    class="peer sr-only"
+                    :checked="settings.notifications[item.key]"
+                    @change="settings.notifications[item.key] = $event.target.checked"
+                  />
+
+                  <span
+                    class="relative h-6 w-11 shrink-0 rounded-full bg-gray-300 transition peer-checked:bg-emerald-500 after:absolute after:right-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:transition peer-checked:after:translate-x-[-20px] dark:bg-white/20"
+                  ></span>
+                </label>
+              </template>
+            </div>
+          </section>
+
+          <!-- سفارش و موجودی -->
+          <section
+            class="overflow-hidden rounded-3xl border border-gray-200 bg-white dark:border-white/5 dark:bg-[#1c1927]"
+          >
+            <div
+              class="flex items-center gap-4 border-b border-gray-100 p-5 sm:p-7 dark:border-white/5"
+            >
+              <div
+                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-500/10 text-2xl text-sky-500"
+              >
+                ⇄
+              </div>
+              <div>
+                <h3 class="font-black">سفارش و موجودی</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  مقادیر پیش‌فرض فروشگاه
+                </p>
+              </div>
+            </div>
+
+            <div class="grid gap-5 p-5 sm:grid-cols-2 sm:p-7">
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold"
+                  >حداقل موجودی هشدار</span
+                >
+                <input
+                  type="number"
+                  x-model.number="settings.minimumStock"
+                  min="0"
+                  max="1000000"
+                  step="1"
+                  required
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                />
+                <p
+                  class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400"
+                >
+                  مثلاً عدد ۵ یعنی هشدار در موجودی پنج عدد یا کمتر.
+                </p>
+              </label>
+
+              <label class="block">
+                <span class="mb-2 block text-sm font-bold"
+                  >روش پیش‌فرض ارسال</span
+                >
+                <select
+                  x-model="settings.shippingMethod"
+                  class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-emerald-500 dark:border-white/10 dark:bg-[#17131d]"
+                >
+                  <option value="post">پست پیشتاز</option>
+                  <option value="courier">پیک فروشگاه</option>
+                  <option value="express">ارسال سریع</option>
+                  <option value="pickup">تحویل حضوری</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <!-- بازگردانی تنظیمات -->
+          <section
+            class="flex flex-col justify-between gap-4 rounded-2xl border border-rose-400/20 bg-rose-400/5 p-5 sm:flex-row sm:items-center"
+          >
+            <div>
+              <h3 class="text-sm font-bold">بازگردانی تنظیمات</h3>
+              <p
+                class="mt-2 text-xs leading-6 text-gray-500 dark:text-gray-400"
+              >
+                مقادیر فرم را به حالت اولیه برمی‌گرداند.
+              </p>
+            </div>
+            <button
+              type="button"
+              @click="resetSettings()"
+              class="rounded-xl border border-rose-400/30 px-5 py-3 text-sm font-bold text-rose-500 transition hover:bg-rose-400/10"
+            >
+              بازگردانی
+            </button>
+          </section>
+
+          <!-- دکمه ذخیره -->
+          <div
+            class="flex flex-col-reverse justify-between gap-3 border-t border-gray-200 py-5 dark:border-white/10 sm:flex-row sm:items-center"
+          >
+            <p class="text-xs text-gray-400">
+              تغییرات اطلاعات پس از ذخیره در همین مرورگر باقی می‌مانند.
+            </p>
+            <button
+              type="submit"
+              class="flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-7 py-3.5 text-sm font-black text-white transition hover:bg-emerald-500 active:scale-[0.98]"
+            >
+              <span>✓</span>
+              ذخیره تغییرات
+            </button>
+          </div>
+        </form>
+
+        <footer class="pb-5 pt-2 text-center text-xs text-gray-400">
+          NEXORA · پنل مدیریت فروشگاه
+        </footer>
+      </main>
+    </div>
+
+    <script type="module" src="../src/settings.js"></script>
+  </body>
+</html>
